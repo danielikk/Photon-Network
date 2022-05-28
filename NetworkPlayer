@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Photon.Pun;
+using Unity.XR.CoreUtils;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
+
+public class NetworkPlayer : MonoBehaviour
+{
+
+    public Transform Head;
+    public Transform leftHand;
+    public Transform rightHand;
+    public Transform body;
+    private PhotonView photonView;
+
+    private Transform headRig;
+    private Transform leftHandRig;
+    private Transform rightHandRig;
+    private Transform bodyRig;
+    void Start()
+    {
+        photonView = GetComponent<PhotonView>();
+        
+        XRRig rig = FindObjectOfType<XRRig>();
+        headRig = rig.transform.Find("GorillaPlayer/Main Camera");
+        leftHandRig = rig.transform.Find("GorillaPlayer/LeftHand Controller");
+        rightHandRig = rig.transform.Find("GorillaPlayer/RightHand Controller");
+        bodyRig = rig.transform.Find("GorillaPlayer/Main Camera");
+    }
+
+    
+    void Update()
+    {
+        if (photonView.IsMine)
+        {
+            rightHand.gameObject.SetActive(true);
+            leftHand.gameObject.SetActive(true);
+            Head.gameObject.SetActive(true); 
+            body.gameObject.SetActive(true);
+            
+            MapPosition(Head, headRig);
+            MapPosition(leftHand, leftHandRig);
+            MapPosition(rightHand, rightHandRig);
+            MapPosition(body,bodyRig);
+        }
+        
+    }
+
+    void MapPosition(Transform target,Transform rigTransform)
+    {
+        target.position = rigTransform.position;
+        target.rotation = rigTransform.rotation;
+    }
+    
+}
